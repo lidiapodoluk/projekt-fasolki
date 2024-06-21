@@ -15,6 +15,8 @@ class Akcja(ABC):
         pass
 
 
+
+
 class SadzFasoleZReki(Akcja):
     '''
     def __init__(self, player, karta, pole_index):
