@@ -83,124 +83,142 @@ class Gra:
             do_posadzenia[self.current_index].append(dobrane_karty[0])
             do_posadzenia[self.current_index].append(dobrane_karty[1])
             
-            print("Czy chcesz handlowac? (y/n)")
-            akcja = input()
-            if akcja == "y":
-                print("Co chcesz? :  ", end='')
-                co_chce = str_to_Karta[input()]
-                print("Co oferujesz? :  ", end='')
-                co_oferuje = str_to_Karta[input()]
-                oferta = Oferta(player, co_chce, co_oferuje)
+            akcja = "y"
+            while akcja == "y":
+                print("Czy chcesz handlowac? (y/n)")
+                akcja = input()
+                if akcja == "y":
+                    print("Co chcesz? :  ", end='')
+                    co_chce = str_to_Karta[input()]
+                    print("Co oferujesz? :  ", end='')
+                    co_oferuje = str_to_Karta[input()]
+                    oferta = Oferta(player, co_chce, co_oferuje)
 
-                #tymczasowo
-                player2 = self.gracze[1]
+                    #tymczasowo
+                    self.gracze[1] = self.gracze[1]
+                    print("                 GOWNO1       player2 ", self.gracze[1])
 
-                if oferta.akceptuj_oferte(player2):
 
-                    def find_first_card(cards_on_hand, card):
-                        try:
-                            for i in range (len(cards_on_hand)):
-                                if cards_on_hand[i] == card:
-                                    del cards_on_hand[i]
-                                    return cards_on_hand
-                        except card not in cards_on_hand:
-                            print("Error! Gracz nie ma tej karty na rece wiec nie moze jej oddac!\n")         
-                            #
-                    
+                    if oferta.akceptuj_oferte(self.gracze[1]):
 
-                    oferujacy = oferta.oferujacy    
-                    co_chce = oferta.co_chce
-                    co_oferuje = oferta.co_oddaje 
-                    
-                    '''
-                    print("\n\n testuje ifa: ")
-                    print(oferujacy)
-                    print(player)
-                    print(co_oferuje)
-                    print(dobrane_karty[0], dobrane_karty[1])
-                    '''
+                        def find_first_card(cards_on_hand, card):
+                            try:
+                                if card not in cards_on_hand:
+                                    raise Exception("Error! Gracz nie ma tej karty na rece wiec nie moze jej oddac!\n")   
+                                for i in range (len(cards_on_hand)):
+                                    if cards_on_hand[i] == card:
+                                        del cards_on_hand[i]
+                                        return cards_on_hand
+                            except Exception:
+                                raise
 
-                    if oferujacy == player and co_oferuje in dobrane_karty:
-                        dobrane_karty.remove(co_oferuje)
-                        do_posadzenia[oferujacy.id].remove(co_oferuje)
-                        do_posadzenia[player2.id].append(co_oferuje)
-                        do_posadzenia[oferujacy.id].append(co_chce)
-                        player2.karty_na_rece = find_first_card(player2.karty_na_rece, co_chce)
-
+                        oferujacy = oferta.oferujacy    
+                        co_chce = oferta.co_chce
+                        co_oferuje = oferta.co_oddaje 
                         
-                        print("\n\nkarty na rece i karty do sadzenia po wymianie handlowej :\n")
+                        '''
+                        print("\n\n testuje ifa: ")
+                        print(oferujacy)
+                        print(player)
+                        print(co_oferuje)
+                        print(dobrane_karty[0], dobrane_karty[1])
+                        '''
+
+                        if oferujacy == player and co_oferuje in dobrane_karty:
+                            dobrane_karty.remove(co_oferuje)
+                            do_posadzenia[oferujacy.id].remove(co_oferuje)
+                            do_posadzenia[self.gracze[1].id].append(co_oferuje)
+                            do_posadzenia[oferujacy.id].append(co_chce)
+                            self.gracze[1].karty_na_rece = find_first_card(self.gracze[1].karty_na_rece, co_chce)
+
+
+                            print("\n\nHANDEL 1: karty na rece i karty do sadzenia po wymianie handlowej :\n")
+                            
+                        else:
+                            do_posadzenia[oferujacy.id].append(co_chce)
+                            do_posadzenia[self.gracze[1].id].append(co_oferuje)
+                            oferujacy.karty_na_rece = find_first_card(oferujacy.karty_na_rece, co_oferuje)
+                            self.gracze[1].karty_na_rece = find_first_card(self.gracze[1].karty_na_rece, co_chce)
+
+
+                            print("\n\nHANDEL 2: karty na rece i karty do sadzenia po wymianie handlowej :\n")
+                            
                         print (oferujacy)
                         for karta in do_posadzenia[oferujacy.id]:
                             print(karta)
-                        print("\n", player2)
-                        for karta in do_posadzenia[player2.id]:
+                        print("\n", self.gracze[1])
+                        for karta in do_posadzenia[self.gracze[1].id]:
                             print(karta)
+                                
 
-                    else:
-                        print("not implemented")
-                            
-                    
-                            
-                    
+            if akcja == "n":
+                for i in range (len(self.gracze)):
+                    print ("\nsadzi gracz:  ", self.gracze[i])
+                    for karta in do_posadzenia[i]:
+                        #print("SRAKA    ", karta, "\n")
+                        akcja = SadzFasoleZHandlu(self.gracze[i], karta)
+                        akcja.wykonaj()
+                                
+                        
 
 
 
-            '''    
-                kolejnosc = [0,1]
-                if (random.randint(0, 2) == 0):
-                    kolejnosc = [1, 0]
-                for index in kolejnosc:
-                    return 
-                    #if Bot[index].akceptuj_oferte(oferta):
-                        #next
-                    #if Bot[index].odrzuc_oferte(oferta):
-                        #next
+                '''    
+                    kolejnosc = [0,1]
+                    if (random.randint(0, 2) == 0):
+                        kolejnosc = [1, 0]
+                    for index in kolejnosc:
+                        return 
+                        #if Bot[index].akceptuj_oferte(oferta):
+                            #next
+                        #if Bot[index].odrzuc_oferte(oferta):
+                            #next
 
-            else:   #akcja == "n", nie handluję, od razu przechodzę do sadzenia 2 dobranych fasol
+                else:   #akcja == "n", nie handluję, od razu przechodzę do sadzenia 2 dobranych fasol
+                    return
+                '''
+
+                
+
+                #dobranie karty po ukończeniu swojej tury
+                player.karty_na_rece.append(self.talia.karty.pop())
+
+                print("len(talia):  ", self.talia)
+                print("karty na rece gracza:  ", player)
+
+
+
+                
+
+            #tura bota
+            else:
                 return
-            '''
-
+                
+            #obsluzyc konczenie gry w sensie podliczanie hajsu itd 
             
-
-            #dobranie karty po ukończeniu swojej tury
-            player.karty_na_rece.append(self.talia.karty.pop())
-
-            print("len(talia):  ", self.talia)
-            print("karty na rece gracza:  ", player)
-
-
-
+            #musi byc tak ze najpierw TRZEBA zasadzic chociaz jedna
+            #if action == "zasadz": 
+                #karta = gracz.karty_na_rece[0] 
+                #if not wybrane_pole rodzaj = karta.rodzaj:
+                    #zbierz_zbiory_wybrane_pole
+                    #trzeba obsluzyc monety
+                #zasadz 
+            #2x powyzszy fragment
             
-
-        #tura bota
-        else:
-            return
-            
-        #obsluzyc konczenie gry w sensie podliczanie hajsu itd 
-        
-        #musi byc tak ze najpierw TRZEBA zasadzic chociaz jedna
-        #if action == "zasadz": 
-            #karta = gracz.karty_na_rece[0] 
-            #if not wybrane_pole rodzaj = karta.rodzaj:
-                #zbierz_zbiory_wybrane_pole
-                #trzeba obsluzyc monety
-            #zasadz 
-         #2x powyzszy fragment
-        
-        #2 wylosowane karty 
-        #wyswietl na srodku
-        #opcje: zasadz/ handluj
-        # zloz oferte co chcesz w zamian za co (takze nic)
-          #losuj gracza ktory 1szy rozpatrzy oferte
-            # jesli zaakceptuje
-              # implementacja dojscia do skutku transakcji i jej efektow
-          # 2 graczy sklada lub nie oferty
-          # jesli zaakceptuję
-            # implementacja dojscia do skutku transakcji i jej efektow
-          # jesli nie -> 
-            #sadzenie fasoli ktorą muszę
-          # sadzenie przehandlowanych fasoli + wyliczenie hajsu
-          # nextTurn()
+            #2 wylosowane karty 
+            #wyswietl na srodku
+            #opcje: zasadz/ handluj
+            # zloz oferte co chcesz w zamian za co (takze nic)
+            #losuj gracza ktory 1szy rozpatrzy oferte
+                # jesli zaakceptuje
+                # implementacja dojscia do skutku transakcji i jej efektow
+            # 2 graczy sklada lub nie oferty
+            # jesli zaakceptuję
+                # implementacja dojscia do skutku transakcji i jej efektow
+            # jesli nie -> 
+                #sadzenie fasoli ktorą muszę
+            # sadzenie przehandlowanych fasoli + wyliczenie hajsu
+            # nextTurn()
  
 
         return
@@ -243,6 +261,7 @@ if __name__ == "__main__":
         player = g.gracze[g.current_index]
         g.play(player)
         #Tura(player)
+
         g.nextTurn()
         if len(g.talia.karty) < 70:
             winner = g.endGame()
