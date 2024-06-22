@@ -38,12 +38,14 @@ Ilosc = {
 #if __name__ == "__main__":
 rodzaje_kart = []
 karty = []
+str_to_Karta = {}
 for i in range (8):
     nazwa, wartosc, ilosc = Nazwa[i], Wartosc[i], Ilosc[i]
     karta = Karta(nazwa, wartosc, ilosc)
     #print(karta)
     rodzaje_kart.append(karta)
     karty.extend([karta] * ilosc)
+    str_to_Karta[nazwa] = karta
 
 
 #test
